@@ -1,11 +1,4 @@
-const readline = require('readline-sync');
-
-const height = readline.questionFloat(`Qual sua altura em metros? `)
-const weight = readline.questionFloat(`Qual seu peso em kilogramas? `)
-
-const imc = weight / (height * height);
-
-function calculaIMC(imc) {
+function imcFunc(imc) {
   var indexIMC = '';
 
   if (imc < 18.5) {
@@ -28,5 +21,6 @@ function calculaIMC(imc) {
   return indexIMC;
 }
 
-
-console.log(`${imc.toFixed(2)} e a situação é ${ calculaIMC(imc) }`);
+module.exports = {
+  imcFunc
+};
