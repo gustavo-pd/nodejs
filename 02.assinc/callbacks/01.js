@@ -7,4 +7,4 @@ fs.readFile('./arquivo.txt', (err, content) => {
   }
 
   console.log(`Arquivo lido com sucesso. Conteúdo: ${content.toString('utf8')}`);
-});
+}); 
