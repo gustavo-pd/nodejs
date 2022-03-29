@@ -10,7 +10,7 @@ const recipes = [
   { id: 1, name: 'Lasanha', price: 40.0, waitTime: 30 },
   { id: 2, name: 'Macarrão a Bolonhesa', price: 35.0, waitTime: 25 },
   { id: 3, name: 'Macarrão com molho branco', price: 35.0, waitTime: 25 },
-  { id: 4, name: 'Arrozin xp', price: 4.0, waitTime: 10 },
+  { id: 4, name: 'Arroz', price: 4.0, waitTime: 10 },
 ];
 
 const ordenedRecipes = recipes.sort((a, b) => {
@@ -46,9 +46,23 @@ app.get('/recipes', function (_req, res) {
   res.json(recipes);
 });
 
-app.post('/recipes', function (req, res) {
-  const { id, name, price, waitTime } = req.body;
-  recipes.push({ id, name, price, waitTime });
+function validateName(req, res, next) {
+  const { name } = req.body;
+  if (!name || name === '') return res.status(400).json({ message: 'Invalid data!'});
+
+  next();
+};
+
+function validatePrice(req, res, next) {
+  const { price } = req.body;
+  if (!price || price < 0 || isNaN(price)) return res.status(400).json({ message: 'Invalid data!'});
+
+  next();
+}
+
+app.post('/recipes', validateName, validatePrice, function (req, res) { // 3
+  const { id, name, price } = req.body;
+  recipes.push({ id, name, price});
   res.status(201).json({ message: 'Recipe created successfully!'});
 });
 
@@ -74,7 +88,7 @@ app.get('/recipes/:id', function (req, res) {
   res.status(200).json(recipe);
 });
 
-app.put('/recipes/:id', function (req, res) {
+app.put('/recipes/:id', validateName, validatePrice, function (req, res) {
   const { id } = req.params;
   const { name, price } = req.body;
   const recipeIndex = recipes.findIndex((r) => r.id === parseInt(id));
@@ -101,7 +115,7 @@ app.get('/drinks', function (_req, res) {
   res.json(ordenedDrinks);
 });
 
-app.post('/drinks', function (req, res) {
+app.post('/drinks', validateName, validatePrice, function (req, res) {
   const { id, name, price } = req.body;
   drinks.push({ id, name, price });
   res.status(201).json({ message: 'Drink created successfully!'});
@@ -122,7 +136,7 @@ app.get('/drinks/:id', function (req, res) {
   res.status(200).json(drink);
 });
 
-app.put('/drinks/:id', function (req, res) {
+app.put('/drinks/:id', validateName, validatePrice, function (req, res) {
   const { id } = req.params;
   const { name, price } = req.body;
   const drinksIndex = drinks.findIndex((r) => r.id === parseInt(id));
