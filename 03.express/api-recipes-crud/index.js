@@ -55,7 +55,7 @@ function validateName(req, res, next) {
 
 function validatePrice(req, res, next) {
   const { price } = req.body;
-  if (!price || price < 0 || isNaN(price)) return res.status(400).json({ message: 'Invalid data!'});
+  if (!price || price < 0 || Number.isNaN(price)) return res.status(400).json({ message: 'Invalid data!'});
 
   next();
 }
