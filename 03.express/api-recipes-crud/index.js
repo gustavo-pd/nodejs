@@ -1,12 +1,12 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const authMiddleware = require('./middlewares/auth');
+// const authMiddleware = require('./middlewares/auth');
 
 const app = express();
 app.use(bodyParser.json());
 app.use(cors());
-app.use(authMiddleware);
+// app.use(authMiddleware);
 
 const recipesRouter = require('./recipesRouter');
 const drinksRouter = require('./drinksRouter');
