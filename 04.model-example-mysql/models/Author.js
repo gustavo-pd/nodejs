@@ -1,13 +1,31 @@
 const connection = require('./connection');
 
-// Busca todas as pessoas autoras do banco.
+const newAuthor = ({id, firstName, middleName, lastName}) => {
+    const fullName = [firstName, middleName, lastName].filter((name) => name).join(" ");
+    return {
+        id,
+        firstName,
+        middleName,
+        lastName,
+        fullName: fullName
+    }
+}
+
+const serialize = (authorData) => {
+    return {
+        id: authorData.id,
+        firstName: authorData.first_name,
+        middleName: authorData.middle_name,
+        lastName: authorData.last_name,
+    }
+}
 
 const getAll = async () => {
     const [authors] = await connection.execute(
         'SELECT id, first_name, middle_name, last_name FROM model_example.authors;',
     );
-    return authors;
-};2
+    return authors.map(serialize).map(newAuthor);
+};
 
 module.exports = {
     getAll,
