@@ -1,4 +1,5 @@
 const connection = require('./connection');
+const Author = require('./Author');
 
 const getAll = async () => {
   const [books] = await connection.execute('SELECT * FROM model_example.books;');
@@ -38,7 +39,7 @@ const getByAuthorId = async (authorId) => {
   }));
 };
 
-const isValid = (title, authorId) => {
+const isValid = async (title, authorId) => {
   if (!title || typeof title !== 'string' || title.length < 3) return false;
   if (!authorId || typeof authorId !== 'number' || !(await Author.findById(authorId))) return false;
 
