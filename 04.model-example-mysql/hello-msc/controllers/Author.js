@@ -1,29 +1,46 @@
 const Author = require('../services/Author');
 
+const Joi = require('joi');
+
 const getAll = async (_req, res) => {
   const authors = await Author.getAll();
 
   res.status(200).json(authors);
 };
 
-const findById = async (req, res) => {
+const findById = async (req, res, next) => {
+  // Extraímos o id da request
   const { id } = req.params;
 
+  // Pedimos para o service buscar o autor
   const author = await Author.findById(id);
 
-  if (!author) return res.status(404).json({ message: 'Not found' });
+  // Caso o service retorne um erro, interrompemos o processamento
+  // e inicializamos o fluxo de erro
+  if (author.error) return next(author.error);
 
-  res.status(200).json(author);
+  // Caso não haja nenhum erro, retornamos o author encontrado
+  return res.status(200).json(author);
 };
 
-const create = async (req, res) => {
-  const { first_name, middle_name, last_name } = req.body;
+const createAuthor = async (req, res, next) => {
+  const { firstName, middleName, lastName } = req.body;
 
-  const author = await Author.createAuthor(first_name, middle_name, last_name);
+  const { error } = Joi.object({
+    firstName: Joi.string().not().empty().required(),
+    lastName: Joi.string().not().empty().required(),
+  })
+    .validate({ firstName, lastName });
 
-  if (!author) return res.status(400).json({ message: 'Dados inválidos' });
+  if (error) {
+    return next(error);
+  }
 
-  res.status(201).json(author);
+  const newAuthor = await Author.createAuthor(firstName, middleName, lastName);
+
+  if (newAuthor.error) return next(newAuthor.error);
+  
+  return res.status(201).json(newAuthor);
 };
 
 module.exports = {
