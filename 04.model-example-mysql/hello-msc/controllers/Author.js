@@ -39,12 +39,12 @@ const createAuthor = async (req, res, next) => {
   const newAuthor = await Author.createAuthor(firstName, middleName, lastName);
 
   if (newAuthor.error) return next(newAuthor.error);
-  
+
   return res.status(201).json(newAuthor);
 };
 
 module.exports = {
-  create,
+  createAuthor,
   findById,
   getAll,
 }
